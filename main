@@ -1,0 +1,54 @@
+import random
+def print_board(board):
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 9)
+def check_winner(board, player):
+    for row in board:
+        if all(cell == player for cell in row):
+            return True
+    for col in range(3):
+        if all(board[row][col] == player for row in range(3)):
+            return True
+    if all(board[i][i] == player for i in range(3)) or all(board[i][2 - i] == player for i in range(3)):
+        return True
+    return False
+def is_board_full(board):
+    return all(cell != " " for row in board for cell in row)
+def get_player_move():
+    while True:
+        try:
+            move = int(input("Enter your move (1-9): "))
+            if 1 <= move <= 9:
+                return (move - 1) // 3, (move - 1) % 3
+            else:
+                print("Invalid move. Please enter a number between 1 and 9.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+def get_computer_move(board):
+    available_moves = [(i, j) for i in range(3) for j in range(3) if board[i][j] == " "]
+    return random.choice(available_moves)
+def play_tic_tac_toe():
+    board = [[" " for _ in range(3)] for _ in range(3)]
+    players = ['X', 'O']
+    print_board(board)
+    while True:
+        for player in players:
+            if player == 'X':
+                row, col = get_player_move()
+            else:
+                row, col = get_computer_move(board)
+            if board[row][col] == " ":
+                board[row][col] = player
+            else:
+                print("Invalid move. Cell already taken. Try again.")
+                continue
+            print_board(board)
+            if check_winner(board, player):
+                print(f"Player {player} wins!")
+                return
+            if is_board_full(board):
+                print("It's a tie!")
+                return
+if __name__ == "__main__":
+    play_tic_tac_toe()
